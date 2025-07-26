@@ -14,6 +14,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     "weather",
 ]
 
@@ -59,6 +60,14 @@ DATABASES = {
     "HOST": os.getenv("POSTGRES_HOST"),
     "PORT": os.getenv("POSTGRES_PORT"),
   }
+}
+
+
+REST_FRAMEWORK = {
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+        "rest_framework.renderers.BrowsableAPIRenderer",
+    ]
 }
 
 
