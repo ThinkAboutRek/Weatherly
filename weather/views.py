@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Search
+from django.shortcuts import render
 
 OPEN_METEO_BASE_URL = os.getenv("OPEN_METEO_BASE_URL", "https://api.open-meteo.com/v1")
 GEOCODING_URL = "https://geocoding-api.open-meteo.com/v1/search"
@@ -49,3 +50,6 @@ def weather_by_city(request):
         "current": data.get("current_weather", {}),
         "daily": data.get("daily", {}),
     })
+
+def index(request):
+    return render(request, "index.html")
