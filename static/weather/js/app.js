@@ -1,60 +1,74 @@
+// existing selectors
 const form = document.getElementById("search-form");
 const input = document.getElementById("city-input");
 const results = document.getElementById("results");
 const toggle = document.getElementById("unit-toggle");
 const recentList = document.getElementById("recent-list");
 
+// new night mode toggle
+const nightToggle = document.getElementById("night-toggle");
+const htmlEl = document.documentElement;
+
 let isCelsius = true;
 
-// Fetch and render recent searches on load
-window.addEventListener("DOMContentLoaded", fetchRecentSearches);
+// On load
+window.addEventListener("DOMContentLoaded", () => {
+  fetchRecentSearches();
+  // initialize night mode from localStorage
+  if (localStorage.getItem("weatherly-theme") === "dark") {
+    nightToggle.checked = true;
+    htmlEl.setAttribute("data-theme", "dark");
+  }
+});
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const city = input.value.trim();
   if (!city) return;
 
-  results.innerHTML = "<p>Loading…</p>";
+  results.innerHTML = `<div class="text-center py-3">Loading…</div>`;
   try {
     const resp = await fetch(`/api/weather/?city=${encodeURIComponent(city)}`);
-    if (!resp.ok) {
-      const err = await resp.json();
-      throw new Error(err.error || "Unknown error");
-    }
+    if (!resp.ok) throw new Error((await resp.json()).error || "Unknown error");
     const data = await resp.json();
     renderWeather(data);
-    await fetchRecentSearches(); // update list after logging in DB
+    await fetchRecentSearches();
   } catch (error) {
-    results.innerHTML = `<p class="error">${error.message}</p>`;
+    results.innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
   }
 });
 
 toggle.addEventListener("change", () => {
   isCelsius = !toggle.checked;
-  // If there’s already rendered data, re-render it
   const lastData = results.dataset.lastData;
   if (lastData) renderWeather(JSON.parse(lastData));
 });
 
+nightToggle.addEventListener("change", () => {
+  const theme = nightToggle.checked ? "dark" : "light";
+  htmlEl.setAttribute("data-theme", theme);
+  localStorage.setItem("weatherly-theme", theme);
+});
+
+// Render functions unchanged except minor Bootstrap tweaks
 function renderWeather(data) {
   const { city, current, daily } = data;
-  // Save for re-render on toggle
   results.dataset.lastData = JSON.stringify(data);
 
-  // Temperature respects the toggle…
   const temp = isCelsius
     ? `${current.temperature}°C`
     : `${(current.temperature * 9/5 + 32).toFixed(1)}°F`;
 
-  // …but wind speed is always m/s
   const speed = `${current.windspeed} m/s`;
 
   let html = `
-    <h2>Weather in ${city}</h2>
-    <p>Temperature: ${temp}</p>
-    <p>Wind Speed: ${speed}</p>
-    <h3>${daily.time.length}-Day Forecast</h3>
-    <ul>
+    <div class="card mb-4">
+      <div class="card-body">
+        <h2 class="card-title">${city}</h2>
+        <p class="card-text">Temperature: ${temp}</p>
+        <p class="card-text">Wind Speed: ${speed}</p>
+        <h5>${daily.time.length}-Day Forecast</h5>
+        <ul class="list-group list-group-flush">
   `;
   for (let i = 0; i < daily.time.length; i++) {
     const max = isCelsius
@@ -63,11 +77,16 @@ function renderWeather(data) {
     const min = isCelsius
       ? `${daily.temperature_2m_min[i]}°C`
       : `${(daily.temperature_2m_min[i] * 9/5 + 32).toFixed(1)}°F`;
-    html += `<li>
-      ${daily.time[i]}: High ${max}, Low ${min}
-    </li>`;
+    html += `
+      <li class="list-group-item">
+        ${daily.time[i]}: High ${max}, Low ${min}
+      </li>`;
   }
-  html += "</ul>";
+  html += `
+        </ul>
+      </div>
+    </div>
+  `;
   results.innerHTML = html;
 }
 
@@ -80,18 +99,19 @@ async function fetchRecentSearches() {
       time: new Date(item.searched_at).toLocaleString(),
     })));
   } catch {
-    // silently fail
+    // silent
   }
 }
 
 function renderRecent(items) {
   recentList.innerHTML = "";
   if (!items.length) {
-    recentList.innerHTML = "<li>No recent searches</li>";
+    recentList.innerHTML = `<li class="list-group-item">No recent searches</li>`;
     return;
   }
   items.forEach(({city, time}) => {
     const li = document.createElement("li");
+    li.className = "list-group-item";
     li.textContent = `${city} at ${time}`;
     recentList.appendChild(li);
   });

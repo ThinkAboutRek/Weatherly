@@ -1,10 +1,30 @@
-body { font-family: sans-serif; padding: 2rem; }
-.container { max-width: 600px; margin: auto; }
-form { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
-input { flex: 1; padding: 0.5rem; }
-button { padding: 0.5rem 1rem; }
-.error { color: red; }
-.toggle-container { margin-bottom: 1rem; }
-#recent-container { margin-top: 2rem; }
-#recent-list { list-style: none; padding: 0; }
-#recent-list li { padding: 0.25rem 0; border-bottom: 1px solid #eee; }
+/* Base theme colors (light) */
+:root[data-theme="light"] {
+  --bs-body-bg: #f8f9fa;
+  --bs-body-color: #212529;
+}
+
+/* Night mode overrides */
+:root[data-theme="dark"] {
+  --bs-body-bg: #212529;
+  --bs-body-color: #f8f9fa;
+  --bs-card-bg: #2c3035;
+  --bs-card-color: #f8f9fa;
+  --bs-list-group-bg: #2c3035;
+  --bs-list-group-border-color: #3a3e44;
+}
+
+body {
+  background-color: var(--bs-body-bg) !important;
+  color: var(--bs-body-color) !important;
+}
+
+.card {
+  background-color: var(--bs-card-bg, #fff) !important;
+  color: var(--bs-card-color, #212529) !important;
+}
+
+.list-group-item {
+  background-color: var(--bs-list-group-bg, #fff) !important;
+  border-color: var(--bs-list-group-border-color, #dee2e6) !important;
+}

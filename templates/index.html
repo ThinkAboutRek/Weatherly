@@ -1,39 +1,70 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Weatherly</title>
+
+  <!-- Bootstrap CSS (no integrity for now) -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+
+  <!-- Your custom styles -->
   <link rel="stylesheet" href="{% static 'weather/css/styles.css' %}" />
 </head>
-<body>
-  <div class="container">
-    <h1>Weatherly</h1>
+<body class="bg-body-secondary text-body">
 
-    <form id="search-form">
-      <input type="text" id="city-input" placeholder="Enter city name" required />
-      <button type="submit">Search</button>
-    </form>
+  <div class="container py-5">
 
-    <!-- °C/°F Toggle -->
-    <div class="toggle-container">
-      <label>
-        <input type="checkbox" id="unit-toggle" />
-        Show °F
-      </label>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="h2">Weatherly</h1>
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="night-toggle" />
+        <label class="form-check-label" for="night-toggle">Night Mode</label>
+      </div>
     </div>
 
-    <!-- Results -->
-    <div id="results"></div>
+    <div class="card mb-4">
+      <div class="card-body">
+        <form id="search-form" class="row gy-2 gx-2 align-items-center">
+          <div class="col-sm-8">
+            <input
+              type="text"
+              id="city-input"
+              class="form-control"
+              placeholder="Enter city name"
+              required
+            />
+          </div>
+          <div class="col-sm-4 d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary w-100">Search</button>
+          </div>
+        </form>
 
-    <!-- Recent Searches -->
-    <div id="recent-container">
-      <h3>Recent Searches</h3>
-      <ul id="recent-list"></ul>
+        <div class="form-check form-switch mt-3">
+          <input class="form-check-input" type="checkbox" id="unit-toggle" />
+          <label class="form-check-label" for="unit-toggle">Show °F</label>
+        </div>
+      </div>
     </div>
+
+    <div id="results" class="mb-4"></div>
+
+    <div class="card">
+      <div class="card-header">Recent Searches</div>
+      <ul id="recent-list" class="list-group list-group-flush">
+        <!-- Will be filled by JS -->
+      </ul>
+    </div>
+
   </div>
 
+  <!-- Bootstrap JS bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Your app JS -->
   <script src="{% static 'weather/js/app.js' %}"></script>
 </body>
 </html>
