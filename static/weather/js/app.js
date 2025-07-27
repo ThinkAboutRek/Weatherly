@@ -23,11 +23,14 @@ form.addEventListener("submit", async (e) => {
 
 function renderWeather(data) {
   const { city, current, daily } = data;
+
+  console.log("Days of forecast:", daily.time.length);
+
   let html = `
     <h2>Weather in ${city}</h2>
     <p>Temperature: ${current.temperature}°C</p>
     <p>Wind Speed: ${current.windspeed} m/s</p>
-    <h3>3‑Day Forecast</h3>
+    <h3>${daily.time.length}-Day Forecast</h3>
     <ul>
   `;
   for (let i = 0; i < daily.time.length; i++) {
