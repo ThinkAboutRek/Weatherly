@@ -41,12 +41,13 @@ function renderWeather(data) {
   // Save for re-render on toggle
   results.dataset.lastData = JSON.stringify(data);
 
+  // Temperature respects the toggle…
   const temp = isCelsius
     ? `${current.temperature}°C`
     : `${(current.temperature * 9/5 + 32).toFixed(1)}°F`;
-  const speed = isCelsius
-    ? `${current.windspeed} m/s`
-    : `${(current.windspeed * 2.237).toFixed(1)} mph`;
+
+  // …but wind speed is always m/s
+  const speed = `${current.windspeed} m/s`;
 
   let html = `
     <h2>Weather in ${city}</h2>
@@ -74,18 +75,13 @@ async function fetchRecentSearches() {
   try {
     const resp = await fetch("/api/searches/");
     const list = await resp.json();
-    renderRecent(ListToDisplay(list));
+    renderRecent(list.map(item => ({
+      city: item.city,
+      time: new Date(item.searched_at).toLocaleString(),
+    })));
   } catch {
     // silently fail
   }
-}
-
-function ListToDisplay(list) {
-  // return array of city names
-  return list.map(item => ({
-    city: item.city,
-    time: new Date(item.searched_at).toLocaleString(),
-  }));
 }
 
 function renderRecent(items) {
