@@ -10,12 +10,30 @@
 <body>
   <div class="container">
     <h1>Weatherly</h1>
+
     <form id="search-form">
       <input type="text" id="city-input" placeholder="Enter city name" required />
       <button type="submit">Search</button>
     </form>
+
+    <!-- °C/°F Toggle -->
+    <div class="toggle-container">
+      <label>
+        <input type="checkbox" id="unit-toggle" />
+        Show °F
+      </label>
+    </div>
+
+    <!-- Results -->
     <div id="results"></div>
+
+    <!-- Recent Searches -->
+    <div id="recent-container">
+      <h3>Recent Searches</h3>
+      <ul id="recent-list"></ul>
+    </div>
   </div>
+
   <script src="{% static 'weather/js/app.js' %}"></script>
 </body>
 </html>

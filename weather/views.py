@@ -1,10 +1,14 @@
 import os
 import requests
+from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Search
-from django.shortcuts import render
+
+# Homepage view
+def index(request):
+    return render(request, "index.html")
 
 OPEN_METEO_BASE_URL = os.getenv("OPEN_METEO_BASE_URL", "https://api.open-meteo.com/v1")
 GEOCODING_URL = "https://geocoding-api.open-meteo.com/v1/search"
@@ -18,7 +22,7 @@ def weather_by_city(request):
 
     Search.objects.create(city=city)
 
-    # 1) Geocoding
+    # Geocoding
     geocode_resp = requests.get(GEOCODING_URL, params={"name": city})
     if geocode_resp.status_code != 200 or not geocode_resp.json().get("results"):
         return Response({"error": "Unable to geocode the city."},
@@ -27,7 +31,7 @@ def weather_by_city(request):
     first = geocode_resp.json()["results"][0]
     lat, lon = first["latitude"], first["longitude"]
 
-    # 2) Forecast
+    # Forecast
     forecast_resp = requests.get(
         f"{OPEN_METEO_BASE_URL}/forecast",
         params={
@@ -36,6 +40,7 @@ def weather_by_city(request):
             "current_weather": True,
             "daily": "temperature_2m_max,temperature_2m_min,weathercode",
             "timezone": "auto",
+            "forecast_days": 7,
         },
     )
     if forecast_resp.status_code != 200:
@@ -51,5 +56,14 @@ def weather_by_city(request):
         "daily": data.get("daily", {}),
     })
 
-def index(request):
-    return render(request, "index.html")
+@api_view(["GET"])
+def recent_searches(request):
+    """
+    GET /api/searches/ → returns last 5 searches
+    """
+    qs = Search.objects.order_by("-searched_at")[:5]
+    data = [
+        {"city": s.city, "searched_at": s.searched_at.isoformat()}
+        for s in qs
+    ]
+    return Response(data)
