@@ -1,30 +1,52 @@
-/* Base theme colors (light) */
-:root[data-theme="light"] {
-  --bs-body-bg: #f8f9fa;
-  --bs-body-color: #212529;
+/* Light mode (no change needed) */
+
+/* Dark mode overrides */
+body.dark-mode {
+  background-color: #121212 !important;
+  color: #eee !important;
 }
 
-/* Night mode overrides */
-:root[data-theme="dark"] {
-  --bs-body-bg: #212529;
-  --bs-body-color: #f8f9fa;
-  --bs-card-bg: #2c3035;
-  --bs-card-color: #f8f9fa;
-  --bs-list-group-bg: #2c3035;
-  --bs-list-group-border-color: #3a3e44;
+body.dark-mode .card {
+  background-color: #1e1e1e !important;
+  color: #eee !important;
 }
 
-body {
-  background-color: var(--bs-body-bg) !important;
-  color: var(--bs-body-color) !important;
+/* Ensure header bars also switch dark and keep text light */
+body.dark-mode .card-header {
+  background-color: #1e1e1e !important;
+  color: #eee !important;
+  border-color: #444 !important;
 }
 
-.card {
-  background-color: var(--bs-card-bg, #fff) !important;
-  color: var(--bs-card-color, #212529) !important;
+/* Force list‐item text to light so forecast lines show up */
+body.dark-mode .list-group-item {
+  background-color: #2a2a2a !important;
+  border-color: #444 !important;
+  color: #eee !important;
 }
 
-.list-group-item {
-  background-color: var(--bs-list-group-bg, #fff) !important;
-  border-color: var(--bs-list-group-border-color, #dee2e6) !important;
+/* —— UPDATED SEARCH BOX STYLING —— */
+body.dark-mode .form-control {
+  background-color: #333 !important;    /* lighter than card-bg for contrast */
+  color: #eee !important;
+  border: 1px solid #666 !important;
+  box-shadow: none !important;
+}
+
+body.dark-mode .form-control::placeholder {
+  color: #bbb !important;               /* make placeholder readable */
+  opacity: 1 !important;
+}
+
+body.dark-mode .form-control:focus {
+  background-color: #333 !important;
+  border-color: #888 !important;
+  box-shadow: 0 0 0 0.2rem rgba(136,136,136,0.25) !important;
+}
+
+/* Buttons still styled dark */
+body.dark-mode .btn {
+  background-color: #333 !important;
+  color: #fff !important;
+  border-color: #444 !important;
 }
