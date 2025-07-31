@@ -22,6 +22,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -117,3 +118,9 @@ TEMPLATES[0]["DIRS"] = [BASE_DIR / "templates"]
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Where collectstatic will collect to
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# (In production, you may want to compress and cache)
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
