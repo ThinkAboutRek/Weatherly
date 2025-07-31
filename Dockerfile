@@ -1,10 +1,9 @@
 # Dockerfile
 FROM python:3.11-slim
 
-# Set workdir
 WORKDIR /app
 
-# Install system deps (Postgres client for migrations)
+# System dependencies for Postgres client
 RUN apt-get update \
     && apt-get install -y --no-install-recommends gcc libpq-dev \
     && rm -rf /var/lib/apt/lists/*
@@ -13,14 +12,14 @@ RUN apt-get update \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy project
+# Copy project files
 COPY . .
 
-# Create directory for static files (optional if collecting static later)
-RUN mkdir -p /app/staticfiles
+# Collect static assets
+RUN python manage.py collectstatic --noinput
 
 # Expose port
 EXPOSE 8000
 
-# Default entrypoint for dev
+# Start Gunicorn
 CMD ["gunicorn", "weatherly.wsgi:application", "--bind", "0.0.0.0:8000"]
