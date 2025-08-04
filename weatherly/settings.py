@@ -1,13 +1,24 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from django.core.exceptions import ImproperlyConfigured
 
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+# DEBUG first, since fallback is only allowed when DEBUG=True
 DEBUG = os.getenv("DEBUG") == "True"
+
+# SECRET_KEY logic with safe fallback only in dev
+_secret = os.getenv("SECRET_KEY")
+if _secret:
+    SECRET_KEY = _secret
+else:
+    if DEBUG:
+        SECRET_KEY = "fallback-insecure-for-dev-only"
+    else:
+        raise ImproperlyConfigured("SECRET_KEY must be set in environment for production")
 
 INSTALLED_APPS = [
     'django.contrib.admin',
