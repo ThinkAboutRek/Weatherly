@@ -367,6 +367,7 @@ All configuration is loaded from `.env` via `python-dotenv`. No value is hard‑
 | `POSTGRES_PASSWORD` | Yes | — | Database password |
 | `POSTGRES_HOST` | Yes | — | Database host (Supabase pooler or `localhost`) |
 | `POSTGRES_PORT` | No | `6543` | Database port (`6543` for Supabase transaction pooler) |
+| `POSTGRES_SSLMODE` | No | `prefer` | SSL mode for Postgres (`require` for Supabase, `disable` for local/CI) |
 | `OPEN_METEO_BASE_URL` | No | `https://api.open-meteo.com/v1` | Override the weather API base URL (useful in tests) |
 
 > **Production guard:** When `DEBUG=False`, a missing `SECRET_KEY` immediately raises `django.core.exceptions.ImproperlyConfigured` — the app will not start with an insecure fallback in production.
