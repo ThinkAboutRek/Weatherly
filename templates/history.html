@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Search History – Weatherly{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="h4 mb-0">My Search History <span class="badge bg-secondary">{{ total }}</span></h2>
+  <a href="{% url 'export-csv' %}{% if city_filter %}?city={{ city_filter }}{% endif %}" class="btn btn-success btn-sm">
+    Export CSV
+  </a>
+</div>
+
+<!-- Filter form -->
+<form method="get" class="row g-2 mb-4">
+  <div class="col-sm-8 col-md-6">
+    <input type="text" name="city" class="form-control" placeholder="Filter by city…" value="{{ city_filter }}" />
+  </div>
+  <div class="col-auto">
+    <button type="submit" class="btn btn-primary">Filter</button>
+    {% if city_filter %}
+      <a href="{% url 'history' %}" class="btn btn-outline-secondary">Clear</a>
+    {% endif %}
+  </div>
+</form>
+
+<!-- Results table -->
+{% if page.object_list %}
+  <div class="card">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>City</th>
+            <th>Searched At</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for search in page.object_list %}
+            <tr>
+              <td class="text-muted">{{ forloop.counter0|add:page.start_index }}</td>
+              <td>{{ search.city }}</td>
+              <td>{{ search.searched_at|date:"Y-m-d H:i" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  {% if page.has_other_pages %}
+    <nav class="mt-4">
+      <ul class="pagination justify-content-center">
+        {% if page.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page.previous_page_number }}{% if city_filter %}&city={{ city_filter }}{% endif %}">Previous</a>
+          </li>
+        {% endif %}
+        <li class="page-item disabled">
+          <span class="page-link">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+        </li>
+        {% if page.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page.next_page_number }}{% if city_filter %}&city={{ city_filter }}{% endif %}">Next</a>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
+{% else %}
+  <div class="alert alert-info">No searches found{% if city_filter %} for "{{ city_filter }}"{% endif %}.</div>
+{% endif %}
+{% endblock %}
