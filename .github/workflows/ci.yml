@@ -27,6 +27,7 @@ jobs:
 
     env:
       DJANGO_SETTINGS_MODULE: weatherly.settings
+      DEBUG: "True"
       POSTGRES_DB: weatherly
       POSTGRES_USER: weatherlyuser
       POSTGRES_PASSWORD: strongpassword
