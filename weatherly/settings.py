@@ -82,7 +82,7 @@ DATABASES = {
         "PORT": os.getenv("POSTGRES_PORT", "6543"),
         "CONN_MAX_AGE": 0,  # Required for Supabase transaction pooler (PgBouncer)
         "OPTIONS": {
-            "sslmode": "require",
+            "sslmode": os.getenv("POSTGRES_SSLMODE", "prefer"),
         },
     }
 }
